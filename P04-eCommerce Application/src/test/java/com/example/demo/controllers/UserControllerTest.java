@@ -8,6 +8,7 @@ import com.example.demo.model.requests.CreateUserRequest;
 import com.example.demo.testUtils;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +20,7 @@ import static org.mockito.Mockito.when;
 
 public class UserControllerTest {
 
-
+    private static final Logger log = LoggerFactory.getLogger(UserControllerTest.class);
     private UserController userController;
     private UserRepository userRepo = mock(UserRepository.class);
     private CartRepository cartRepo = mock(CartRepository.class);
@@ -58,21 +59,42 @@ public class UserControllerTest {
 
     @Test
     public void verify_username_happy_path() throws  Exception {
-        CreateUserRequest user = new CreateUserRequest();
-        user.setUsername("Name");
+        CreateUserRequest cr = new CreateUserRequest();
+        cr.setUsername("Name");
+        cr.setPassword("password");
+        cr.setConfirmPassword("password");
 
-        final ResponseEntity<User> response = userController.findByUserName("");
+        final ResponseEntity<User> response1 = userController.createUser(cr);
+        User user = response1.getBody();
+        Mockito.when(userRepo.findByUsername(user.getUsername())).thenReturn(user);
+        final ResponseEntity<User> response2 = userController.findByUserName(user.getUsername());
 
-        assertNotNull(response);
-        assertEquals(404, response.getStatusCodeValue());
-        assertEquals("Name", user.getUsername());
+        User user1 = response2.getBody();
+
+        assertNotNull(response1);
+        assertEquals(200, response1.getStatusCodeValue());
+        assertNotNull(response2);
+        log.info(String.valueOf(response2));
+        assertEquals(200, response2.getStatusCodeValue());
+        assertEquals("Name", user1.getUsername());
     }
 
     @Test
     public void verify_userId_happy_path() throws  Exception {
-        final ResponseEntity<User> response = userController.findById((long) 1);
-        assertNotNull(response);
-        assertEquals(404, response.getStatusCodeValue());
+        CreateUserRequest cr = new CreateUserRequest();
+        cr.setUsername("Name");
+        cr.setPassword("password");
+        cr.setConfirmPassword("password");
+
+        final ResponseEntity<User> response1 = userController.createUser(cr);
+        User user = response1.getBody();
+        Mockito.when(userRepo.findById(user.getId())).thenReturn(java.util.Optional.of(user));
+
+        ResponseEntity<User> response2 = userController.findById(user.getId());
+
+        assertEquals(200, response2.getStatusCodeValue());
+        assertEquals("Name", response2.getBody().getUsername());
+        log.info(String.valueOf(response2));
     }
 
 

@@ -11,6 +11,7 @@ import com.example.demo.model.requests.ModifyCartRequest;
 import com.example.demo.testUtils;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 import org.springframework.http.ResponseEntity;
 
 import java.math.BigDecimal;
@@ -39,33 +40,69 @@ public class CartControllerTest {
     }
 
     @Test
-    public void addToCart_happy_path() throws  Exception {
-        ModifyCartRequest cr = new ModifyCartRequest();
+    public void  javaaddToCart_happy_path() throws  Exception {
+
         User u = new User();
+        u.setUsername("testUser");
+        u.setPassword("passtest");
+        Cart cart = new Cart();
+        cart.setUser(u);
+        u.setCart(cart);
+
         Optional<Item> item = Optional.of(new Item());
         item.get().setPrice(BigDecimal.valueOf(1.99));
         item.get().setId((long)1);
+        item.get().setName("itemName");
+        item.get().setDescription("This is an item.");
 
-        when(userRepo.findByUsername(cr.getUsername())).thenReturn(u);
+        ModifyCartRequest cr = new ModifyCartRequest();
+        cr.setUsername("testUser");
+        cr.setQuantity(1);
+        cr.setItemId((1));
 
-        when(itemRepo.findById(cr.getItemId())).thenReturn(item);
+
+        Mockito.when(userRepo.findByUsername(cr.getUsername())).thenReturn(u);
+
+        Mockito.when(itemRepo.findById(cr.getItemId())).thenReturn(item);
 
         final ResponseEntity<Cart> response = cartController.addTocart(cr);
+
         assertNotNull(response);
         assertEquals(200, response.getStatusCodeValue());
+
+        Cart cartObj = response.getBody();
+
+        assertEquals("testUser", cartObj.getUser().getUsername());
+        assertEquals("itemName", cartObj.getItems().get(0).getName());
 
     }
 
     @Test
     public void remove_from_cart_happy_path() throws Exception {
 
-        ModifyCartRequest cr = new ModifyCartRequest();
         User u = new User();
+        u.setUsername("testUser");
+        u.setPassword("passtest");
+        Cart cart = new Cart();
+        cart.setUser(u);
+        u.setCart(cart);
+
         Optional<Item> item = Optional.of(new Item());
+        item.get().setPrice(BigDecimal.valueOf(1.99));
+        item.get().setId((long)1);
+        item.get().setName("itemName");
+        item.get().setDescription("This is an item.");
 
-        when(userRepo.findByUsername(cr.getUsername())).thenReturn(u);
+        ModifyCartRequest cr = new ModifyCartRequest();
+        cr.setUsername("testUser");
+        cr.setQuantity(1);
+        cr.setItemId((1));
 
-        when(itemRepo.findById(cr.getItemId())).thenReturn(item);
+
+        Mockito.when(userRepo.findByUsername(cr.getUsername())).thenReturn(u);
+
+        Mockito.when(itemRepo.findById(cr.getItemId())).thenReturn(item);
+
 
         final ResponseEntity<Cart> response = cartController.removeFromcart(cr);
         assertNotNull(response);

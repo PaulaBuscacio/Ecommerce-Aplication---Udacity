@@ -1,8 +1,10 @@
 package com.example.demo.controllers;
 
+import java.io.IOException;
 import java.util.Optional;
 import java.util.stream.IntStream;
 
+import com.splunk.TcpInput;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +28,9 @@ import com.example.demo.model.requests.ModifyCartRequest;
 public class CartController {
 
 	private static  final Logger log = LoggerFactory.getLogger(CartController.class);
+
+//	@Autowired
+//	private TcpInput tcpInput;
 	
 	@Autowired
 	private UserRepository userRepository;
@@ -37,7 +42,7 @@ public class CartController {
 	private ItemRepository itemRepository;
 	
 	@PostMapping("/addToCart")
-	public ResponseEntity<Cart> addTocart(@RequestBody ModifyCartRequest request) {
+	public ResponseEntity<Cart> addTocart(@RequestBody ModifyCartRequest request) throws IOException {
 		User user = userRepository.findByUsername(request.getUsername());
 		log.info("username: ", request.getUsername());
 		if(user == null) {
@@ -56,7 +61,7 @@ public class CartController {
 			.forEach(i -> cart.addItem(item.get()));
 		log.info("item add: ", request.getItemId());
 		cartRepository.save(cart);
-
+		//tcpInput.submit("INFO: New user create request received");
 		return ResponseEntity.ok(cart);
 	}
 	
