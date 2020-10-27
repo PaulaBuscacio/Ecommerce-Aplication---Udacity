@@ -9,8 +9,11 @@ import com.example.demo.model.persistence.repositories.UserRepository;
 import com.example.demo.testUtils;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mockito;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -19,6 +22,8 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 
+@RunWith(SpringRunner.class)
+@SpringBootTest
 public class OrderControllerTest {
 
     private OrderController orderController;
@@ -63,6 +68,30 @@ public class OrderControllerTest {
         assertEquals(user, order.getUser());
         assertEquals(items, UserOrder.createFromCart(user.getCart()).getItems());
         assertEquals("This is an item.", response1.getItems().get(0).getDescription());
+
+
+    }
+
+    @Test
+    public  void submit_order_user_not_found()  {
+        User user = new User();
+        Cart cart = new Cart();
+        user.setCart(cart);
+        cart.setUser(user);
+
+        Item item = new Item();
+        item.setPrice(BigDecimal.valueOf(1.99));
+        item.setId((long)1);
+        item.setName("itemName");
+        item.setDescription("This is an item.");
+        List<Item> items = new ArrayList<>();
+        items.add(item);
+        cart.setItems(items);
+
+        ResponseEntity<UserOrder> response = orderController.submit(user.getUsername());
+
+        assertEquals(404, response.getStatusCodeValue());
+
 
 
     }

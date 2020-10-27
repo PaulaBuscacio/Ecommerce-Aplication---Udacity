@@ -8,16 +8,21 @@ import com.example.demo.model.requests.CreateUserRequest;
 import com.example.demo.testUtils;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+@RunWith(SpringRunner.class)
+@SpringBootTest
 public class UserControllerTest {
 
     private static final Logger log = LoggerFactory.getLogger(UserControllerTest.class);
@@ -77,6 +82,21 @@ public class UserControllerTest {
         log.info(String.valueOf(response2));
         assertEquals(200, response2.getStatusCodeValue());
         assertEquals("Name", user1.getUsername());
+    }
+
+    @Test
+    public void create_user_bad_request() throws  Exception {
+        CreateUserRequest r = new CreateUserRequest();
+        r.setUsername("test");
+        r.setPassword("testPassword");
+        r.setConfirmPassword("test");
+
+
+        final ResponseEntity<User> response = userController.createUser(r);
+
+        assertNotNull(response);
+        assertEquals(400, response.getStatusCodeValue());
+
     }
 
     @Test

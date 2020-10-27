@@ -5,8 +5,11 @@ import com.example.demo.model.persistence.repositories.ItemRepository;
 import com.example.demo.testUtils;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mockito;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -16,6 +19,8 @@ import java.util.Optional;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 
+@RunWith(SpringRunner.class)
+@SpringBootTest
 public class ItemControllerTest {
 
     private ItemController itemController;
@@ -75,4 +80,17 @@ public class ItemControllerTest {
         assertEquals(java.util.Optional.of((long) 1), java.util.Optional.of(item.getId()));
     }
 
+    @Test
+    public void get_item_id_exception() throws Exception{
+        Item item = new Item();
+        item.setPrice(BigDecimal.valueOf(1.99));
+        item.setName("itemName");
+        item.setDescription("This is an item.");
+
+        Mockito.when(itemRepo.findById((long)1)).thenReturn(java.util.Optional.of(item));
+
+        ResponseEntity<Item> response = itemController.getItemById((long)1);
+        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(java.util.Optional.of((long) 1), java.util.Optional.of(item.getId()));
+    }
 }

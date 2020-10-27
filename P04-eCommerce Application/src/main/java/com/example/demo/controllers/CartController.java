@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.Optional;
 import java.util.stream.IntStream;
 
-import com.splunk.TcpInput;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,8 +28,6 @@ public class CartController {
 
 	private static  final Logger log = LoggerFactory.getLogger(CartController.class);
 
-//	@Autowired
-//	private TcpInput tcpInput;
 	
 	@Autowired
 	private UserRepository userRepository;
@@ -44,7 +41,7 @@ public class CartController {
 	@PostMapping("/addToCart")
 	public ResponseEntity<Cart> addTocart(@RequestBody ModifyCartRequest request) throws IOException {
 		User user = userRepository.findByUsername(request.getUsername());
-		log.info("username: ", request.getUsername());
+		log.info("username: {} ", request.getUsername());
 		if(user == null) {
 			log.info("user not found", ResponseEntity.status(HttpStatus.NOT_FOUND).build());
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
@@ -59,9 +56,8 @@ public class CartController {
 		Cart cart = user.getCart();
 		IntStream.range(0, request.getQuantity())
 			.forEach(i -> cart.addItem(item.get()));
-		log.info("item add: ", request.getItemId());
+		log.info("item add: {}", request.getItemId());
 		cartRepository.save(cart);
-		//tcpInput.submit("INFO: New user create request received");
 		return ResponseEntity.ok(cart);
 	}
 	
