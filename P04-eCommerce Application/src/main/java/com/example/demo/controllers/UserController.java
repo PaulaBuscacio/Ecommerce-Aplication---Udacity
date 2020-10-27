@@ -21,6 +21,7 @@ import com.example.demo.model.persistence.repositories.UserRepository;
 import com.example.demo.model.requests.CreateUserRequest;
 
 import java.io.IOException;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/user")
@@ -29,7 +30,7 @@ public class UserController {
 	private static  final Logger log = LoggerFactory.getLogger(UserController.class);
 
 
-	private static TcpInput tcpInput;
+	private TcpInput tcpInput;
 
 	@Autowired
 	private UserRepository userRepository;
