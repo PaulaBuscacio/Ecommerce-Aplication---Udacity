@@ -4,6 +4,7 @@ import com.splunk.TcpInput;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,8 +28,8 @@ public class UserController {
 
 	private static  final Logger log = LoggerFactory.getLogger(UserController.class);
 
-//	@Autowired
-//	private TcpInput tcpInput;
+
+	private static TcpInput tcpInput;
 
 	@Autowired
 	private UserRepository userRepository;
@@ -67,7 +68,7 @@ public class UserController {
 
 		userRepository.save(user);
 		log.info("User {} has been created successfully", createUserRequest.getUsername());
-	//	tcpInput.submit("INFO: New user create request received");
+		tcpInput.submit("INFO: New user create request received");
 		return ResponseEntity.ok(user);
 
 	}
