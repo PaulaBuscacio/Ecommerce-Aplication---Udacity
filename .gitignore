@@ -1,0 +1,14 @@
+# Default ignored files
+/shelf/
+/workspace.xml
+
+# ignore all logs *.log
+**/logs
+
+
+# ignore .idea
+**/.idea
+
+
+# ignore target
+**/target
