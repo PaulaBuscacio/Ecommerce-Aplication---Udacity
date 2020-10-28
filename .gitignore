@@ -1,14 +1,14 @@
-# Default ignored files
-/shelf/
-/workspace.xml
-
-# ignore all logs *.log
+## ignore all logs *.log
 **/logs
 
-
-# ignore .idea
+## ignore .idea
 **/.idea
+/P04-eCommerce Application/.idea/
 
-
-# ignore target
+## ignore target
+/P04-eCommerce Application/target/
 **/target
+
+
+
+
