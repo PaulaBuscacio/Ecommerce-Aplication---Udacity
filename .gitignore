@@ -1,0 +1,14 @@
+## ignore all logs *.log
+**/logs
+
+## ignore .idea
+**/.idea
+/P04-eCommerce Application/.idea/
+
+## ignore target
+/P04-eCommerce Application/target/
+**/target
+
+
+
+
